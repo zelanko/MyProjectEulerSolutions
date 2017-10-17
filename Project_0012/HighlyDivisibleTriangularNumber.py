@@ -1,27 +1,28 @@
-import time
+from pyprimes import factors
+from itertools import chain, combinations
 
-elapsed = 0
+def all_divisors_primes(n):
+  finalset = []
+  primefactors = factors(n)
+  powerset = chain.from_iterable(combinations(primefactors, r) for r in range(1, len(primefactors) + 1))
+  for s in powerset:
+    divisor = 1
+    for d in s:
+      divisor *= d
+    finalset.append(divisor)
+  
+  finalset.insert(0, 1)
+  
+  return list(set(finalset))
 
-def all_divisors(n):
-  t0 = time.perf_counter()
-  r = [i for i in range(1, n // 2 + 1) if n % i == 0]
-  r.append(n)
-  elapsed = time.perf_counter() - t0
-  return r, elapsed
+n = 0
+nthValue = 0
+divisor_count = 0
+max_divisor_count = 0
 
-maxDivisorCount, n, nthValue, divisorList, divisorCount = 1, 1, 1, [1], 1
-
-while divisorCount < 150:
+while divisor_count < 500:
   n += 1
   nthValue += n
-  divisorList, elapsed = all_divisors(nthValue)
-  divisorCount = len(divisorList)
-
-  # if divisorCount > maxDivisorCount:
-  #   maxDivisorCount = divisorCount
-  print('nthValue: {}, n: {}, divisorCount: {}, elapsed: {}'.format(nthValue, n, divisorCount, elapsed))
-  print(divisorList)
-
-
+  divisor_count = len(all_divisors_primes(nthValue))
 
 print(nthValue)
