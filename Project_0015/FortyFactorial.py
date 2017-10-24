@@ -5,6 +5,6 @@ def paths_for_square_grid(side_length):
     """Calculate the count of possible paths through a square grid of given side_length"""
     return factorial(side_length * 2) // (factorial(side_length) * factorial(side_length))
 
-for axis_length in range(2, 51):
-    paths = paths_for_square_grid(axis_length)
-    print("axes length: {}, paths: {}".format(axis_length, paths))
+axis_length = 20
+paths = paths_for_square_grid(axis_length)
+print(paths)
