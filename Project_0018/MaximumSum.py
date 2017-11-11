@@ -1,14 +1,25 @@
+def maxParentValueOf(max_path_sums, member_index):
+    start = 0
+
+    if member_index > 1:
+        start = member_index - 1
+
+    end = member_index + 1
+
+    max_value = max(max_path_sums[start: end])
+
+    return max_value
+
 def maximumPathSum(iterable_of_iterable_of_ints):
-    path_sum = 0
-    index_of_greatest_value_member = 0
+    max_path_sums = [0]
+
     for iterable_of_ints in iterable_of_iterable_of_ints:
-        number_options = iterable_of_ints[index_of_greatest_value_member:index_of_greatest_value_member + 2]
-        max_value = max(number_options)
-        path_sum += max_value
-        index_of_greatest_value_member += number_options.index(max_value)
-        print("{}: sum: {}".format(max_value, path_sum))
+        new_max_path_sums = []
+        for i, v in enumerate(iterable_of_ints):
+            new_max_path_sums.append(v + maxParentValueOf(max_path_sums, i))
         
-    return path_sum
+        max_path_sums = new_max_path_sums
+    print(max(max_path_sums))
 
 pyramid_of_values = [
     [75],
