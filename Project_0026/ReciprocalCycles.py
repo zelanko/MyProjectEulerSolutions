@@ -1,4 +1,5 @@
-"""A unit fraction contains 1 in the numerator. The decimal representation of the unit fractions with denominators 2 to 10 are given:
+"""A unit fraction contains 1 in the numerator. The decimal representation of the unit
+fractions with denominators 2 to 10 are given:
 
 1/2	= 	0.5
 1/3	= 	0.(3)
@@ -9,50 +10,59 @@
 1/8	= 	0.125
 1/9	= 	0.(1)
 1/10	= 	0.1
-Where 0.1(6) means 0.166666..., and has a 1-digit recurring cycle. It can be seen that 1/7 has a 6-digit recurring cycle.
+Where 0.1(6) means 0.166666..., and has a 1-digit recurring cycle. It can be seen that
+1/7 has a 6-digit recurring cycle.
 
-Find the value of d < 1000 for which 1/d contains the longest recurring cycle in its decimal fraction part."""
+Find the value of d < 1000 for which 1/d contains the longest recurring cycle in its
+decimal fraction part."""
 
-from decimal import Decimal, getcontext
-import decimal
+from decimal import getcontext, localcontext, ROUND_DOWN, Inexact
 
-precision = 599
-getcontext().rounding=decimal.ROUND_DOWN
-getcontext().prec = precision
+def recurrence_pattern(denominator: int, precision: int = 28):
+    """Find recurring pattern of digits in rational number using requested precision."""
+    with localcontext() as ctx:
+        ctx.prec = precision
+        ctx.rounding = ROUND_DOWN
 
-longest_repetition_pattern = 0
-
-for n in range(2, 1000):
-    frac = str(Decimal(1) / Decimal(n))[2:][:precision]
-    
-    if len(frac) == precision:
+        decimal_fraction = ctx.divide(1, denominator)
+        frac = str(decimal_fraction)[2:]
         pattern_confirmed = False
         offset = 0
         length = 1
-        
-        while not pattern_confirmed and not offset + length > precision:
+
+        while not pattern_confirmed and offset + length <= len(frac):
             offset_and_length = offset + length
             proposed_pattern = frac[offset:offset_and_length]
-            if (int(proposed_pattern) == 0):
+            if int(proposed_pattern) == 0:
                 length += 1
                 continue
 
             find_index = frac.find(proposed_pattern, offset_and_length)
             find_count = frac.count(proposed_pattern, offset)
-            if (find_index == -1):
+            if find_index == -1:
                 offset += 1
                 length = 1
                 continue
 
             if offset_and_length == find_index and find_count == (len(frac) - offset) // length:
                 pattern_confirmed = True
-                print(f"n: {n}, 0.{frac[0:offset]}({proposed_pattern})")
                 break
 
             length += 1
 
-        if not pattern_confirmed: print(f"No repetition found: {frac}")
+    if pattern_confirmed is True:
+        return_value = dict(pre=frac[0:offset], recurrence=proposed_pattern)
     else:
-        print(f'n: {n}, 0.{frac}')
+        return_value = recurrence_pattern(denominator, precision * 2)
 
-        
+    return return_value
+
+for n in range(2, 1000):
+    decimal_fraction = getcontext().divide(1, n)
+    if getcontext().flags[Inexact]:
+        pattern = recurrence_pattern(n)
+        print(f"1/{n}, 0.{pattern['pre']}({pattern['recurrence']})")
+    else:
+        print(f'1/{n}, {decimal_fraction}')
+    
+    getcontext().clear_flags()
