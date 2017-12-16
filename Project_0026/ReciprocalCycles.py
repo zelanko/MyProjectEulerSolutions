@@ -18,7 +18,7 @@ decimal fraction part."""
 
 from decimal import getcontext, localcontext, ROUND_DOWN, Inexact
 
-def recurrence_pattern(denominator: int, precision: int = 28):
+def recurrence_pattern(denominator: int, precision: int = 9999):
     """Find recurring pattern of digits in rational number using requested precision."""
     with localcontext() as ctx:
         ctx.prec = precision
@@ -57,12 +57,19 @@ def recurrence_pattern(denominator: int, precision: int = 28):
 
     return return_value
 
+max_pattern_length_n = 0
+max_pattern_length = 0
+
 for n in range(2, 1000):
+    getcontext().clear_flags()
     decimal_fraction = getcontext().divide(1, n)
     if getcontext().flags[Inexact]:
         pattern = recurrence_pattern(n)
-        print(f"1/{n}, 0.{pattern['pre']}({pattern['recurrence']})")
-    else:
-        print(f'1/{n}, {decimal_fraction}')
-    
-    getcontext().clear_flags()
+        pattern_length = len(pattern['recurrence'])
+        if max_pattern_length < pattern_length:
+            max_pattern_length = pattern_length
+            max_pattern_length_n = n
+
+        # print(n, len(pattern['recurrence']), decimal_fraction, f"0.{pattern['pre']}({pattern['recurrence']})")
+print("value d", "length", sep=' | ')
+print(max_pattern_length_n, max_pattern_length, sep=' | ')
