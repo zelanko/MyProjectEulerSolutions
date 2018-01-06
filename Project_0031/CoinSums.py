@@ -65,9 +65,9 @@ while pattern_queue:
         if (p not in valid_patterns and p not in pattern_queue):
             pattern_queue.add(p)
 
-# Output the sorted results.
-with open("./patterns.txt", "w") as out:
-    for p in sorted(list(valid_patterns), reverse=True):
-        out.write(f"Sum:{sum(p)};{p}\n")
+# # Output the sorted results.
+# with open("./patterns.txt", "w") as out:
+#     for p in sorted(list(valid_patterns), reverse=True):
+#         out.write(f"Sum:{sum(p)};{p}\n")
 
 print(len(valid_patterns))
