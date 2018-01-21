@@ -12,62 +12,43 @@ It is possible to make £2 in the following way:
 
 How many different ways can £2 be made using any number of coins?"""
 
-from itertools import filterfalse 
+from itertools import combinations, chain, repeat
 
-def unique_non_terminals(iterable):
-    """iterator for unique non-terminals"""
-    # 1 is always a terminal
-    seen = {1}
+target_value = 200
 
-    for item in iterable:
-        if item not in seen:
-            seen.add(item)
-            yield item
+COINS = [1, 2, 5, 10, 20, 50, 100, 200] 
 
-def derive_valid_patterns(pattern: tuple):
-    """Derive single-change patterns from the provided pattern.
-    
-    Keyword arguments:
-    pattern -- tuple 
+COIN_INDEX = {coin: index for index, coin in enumerate(COINS)}
 
-    Keyword returns:
-    returns a list of tuples
-    """
-    new_patterns = set()
+def sum_coin_list(coin_list: list):
+    return sum(coin_list[i] * COINS[i] for i in range(0, len(coin_list)))
+   
+coin_combination_count = 0
 
-    for value in unique_non_terminals(pattern):
-        derivative_pattern = list(pattern)
-        derivative_pattern.remove(value)
-        derivative_pattern.extend(TRANSFORMATIONS[value])
-        new_patterns.add(tuple(sorted(derivative_pattern)))
-    
-    return new_patterns
+# with open('out.txt', mode='w') as file:
+target_2lb_value = target_value
+max_2lb_coins = target_2lb_value // 200
+for coins_2lb in range(0, max_2lb_coins + 1):
+    target_1lb_value = target_2lb_value - coins_2lb * 200
+    max_1lb_coins = target_2lb_value // 100
+    for coins_1lb in range(0, max_1lb_coins + 1):
+        target_50p_value = target_1lb_value - coins_1lb * 100
+        max_50p_coins = target_1lb_value // 50
+        for coins_50p in range(0, max_50p_coins + 1):
+            target_20p_value = target_50p_value - coins_50p * 50
+            max_20p_coins = target_20p_value // 20
+            for coins_20p in range(0, max_20p_coins + 1):
+                target_10p_value = target_20p_value - coins_20p * 20
+                max_10p_coins = target_10p_value // 10
+                for coins_10p in range(0, max_10p_coins + 1):
+                    target_5p_value = target_10p_value - coins_10p * 10
+                    max_5p_coins = target_5p_value // 5
+                    for coins_5p in range(0, max_5p_coins + 1):
+                        target_2p_coins = target_5p_value - coins_5p * 5
+                        max_2p_coins = target_2p_coins // 2
+                        for coins_2p in range(0, max_2p_coins + 1):
+                            # coins = (target_2p_coins - 2 * coins_2p, coins_2p, coins_5p, coins_10p, coins_20p, coins_50p, coins_1lb, coins_2lb)
+                            # file.write(f"{coins}; sum: {sum_coin_list(coins)}\n")
+                            coin_combination_count += 1
 
-TRANSFORMATIONS = {
-    200: (100, 100),
-    100: (50, 50),
-    50: (10, 20, 20),
-    20: (10, 10),
-    10: (5, 5),
-    5: (1, 2, 2),
-    2: (1, 1)
-}
-
-pattern_queue = {(200,)}
-
-valid_patterns = set()
-
-# Empty sequense == False
-while pattern_queue:
-    COIN_PATTERN = pattern_queue.pop()
-    valid_patterns.add(COIN_PATTERN)
-    for p in derive_valid_patterns(COIN_PATTERN):
-        if (p not in valid_patterns and p not in pattern_queue):
-            pattern_queue.add(p)
-
-# # Output the sorted results.
-# with open("./patterns.txt", "w") as out:
-#     for p in sorted(list(valid_patterns), reverse=True):
-#         out.write(f"Sum:{sum(p)};{p}\n")
-
-print(len(valid_patterns))
+print(coin_combination_count)
