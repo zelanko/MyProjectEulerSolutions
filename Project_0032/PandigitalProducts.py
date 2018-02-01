@@ -12,16 +12,7 @@ a 1 through 9 pandigital.
 HINT: Some products can be obtained in more than one way so be sure to only include it once in
 your sum.
 """
-
-# We store a product if,
-# sorted(f"{multiplier}{multiplicand}{product}"}) == ['1','2','3','4','5','6','7','8','9']
-
-import sys
-sys.path.append('..')
 from reuse import properDivisors
-
-from itertools import count
-from pyprimes import factors
 
 products_to_sum = set()
 
@@ -29,9 +20,6 @@ factors_seen = set()
 for p in range(4000, 10000):
     factors_seen.clear()
     for divisor in properDivisors(p):
-        # if divisor in factors_seen:
-        #     break
-
         multiplicand = p // divisor
 
         factors_seen.add(multiplicand)
