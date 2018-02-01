@@ -17,7 +17,7 @@ from reuse import properDivisors
 products_to_sum = set()
 
 factors_seen = set()
-for p in range(4000, 10000):
+for p in range(4396, 7853):
     factors_seen.clear()
     for divisor in properDivisors(p):
         multiplicand = p // divisor
