@@ -8,9 +8,7 @@ How many circular primes are there below one million?"""
 
 from pyprimes import primes_below, isprime
 
-
 empty_set = frozenset()
-
 
 def circular_shifts(first_number: int):
     """Get the circular shifts for i."""
